@@ -51,33 +51,73 @@ void prockernel()
 	// Create the user processes
 
 	createproc(proca, (void *) 0x3000);
+	createproc(procb, (void *) 0x3100);
+	createproc(procc, (void *) 0x3200);
+	createproc(procd, (void *) 0x3300);
+	createproc(proce, (void *) 0x3400);
 
-	// Schedule the next process
+	// while loop -- while any process is ready, yield
 
-	printf(message0);
-	yield();
-
-	printf(message1);
-	yield();
-
-	printf(message2);
 	exit();
+
 }
 
 // The user processes
 
 void proca()
 {
-	char message0[] = "Starting User Process A\n";
-	char message1[] = "Resuming User Process A\n";
-	char message2[] = "Exiting User Process A\n";
+	char letter = 'A';
+	putchar(&letter);
+	exit();
+}
 
-	printf(message0);
+void procb()
+{
+	char letter = 'B';
+	putchar(&letter);
 	yield();
 
-	printf(message1);
+	putchar(&letter);
+	exit();
+}
+
+void procc()
+{
+	char letter = 'C';
+	putchar(&letter);
 	yield();
-	
-	printf(message2);
+
+	putchar(&letter);
 	yield();
+
+	putchar(&letter);
+	yield();
+
+	putchar(&letter);
+	exit();
+}
+
+
+void procd()
+{
+	char letter = 'D';
+	putchar(&letter);
+	yield();
+
+	putchar(&letter);
+	yield();
+
+	putchar(&letter);
+	exit();
+}
+
+
+void proce()
+{
+	char letter = 'E';
+	putchar(&letter);
+	yield();
+
+	putchar(&letter);
+	exit();
 }

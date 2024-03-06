@@ -5,6 +5,8 @@
 // An array to hold all of the processes we create
 proc_t processes[MAX_PROCS];
 
+int max_ready_pid;
+
 // Keep track of the next index to place a newly created process in the process array
 uint8 process_index = 0;
 
@@ -62,6 +64,8 @@ int createproc(void *func, void *stack)
     userproc.eip = func;
     userproc.pid = process_index;
 
+    max_ready_pid = process_index;
+
     processes[process_index] = userproc;
     process_index++;
 
@@ -83,7 +87,20 @@ void yield()
 {   
     if (running->type == PROC_KERNEL)
     {
-        schedule();
+        for(int i=0; i<process_index; i++)
+        {
+            if(processes[i].status == PROC_READY)
+            {
+                max_ready_pid = i;
+            }
+        }
+        if(max_ready_pid)
+        {
+            schedule();
+        } else {
+            printf("\nNo process to yield to! Resuming...\n");
+        }
+
     } else if (running->type == PROC_USER)
     {
         next = kernel;
@@ -99,17 +116,28 @@ void yield()
 }
 
 int schedule()
-{
+{ 
+    int loop_entry;
 
-    if(&processes[1])
+    if(running->pid == max_ready_pid)
     {
-        next = &processes[1];
-        return 1;
+        loop_entry = 1;
+    } else
+    {
+        loop_entry = running->pid + 1;
     }
 
-    printf("No process to schedule! Resuming...\n");
-    next = 0;
-    return 0;
+    for(int i=loop_entry; i<max_ready_pid; i++)
+    {
+        if (processes[i].status == PROC_READY)
+        {
+            next = &processes[i];
+            return 1;
+        }
+    }
+
+    next = &processes[running->pid];
+    return 1;
 }
 
 // Context switching function
