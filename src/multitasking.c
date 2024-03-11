@@ -6,6 +6,7 @@
 proc_t processes[MAX_PROCS];
 
 int max_ready_pid;
+int most_recent_user;
 
 // Keep track of the next index to place a newly created process in the process array
 uint8 process_index = 0;
@@ -19,6 +20,20 @@ proc_t *kernel;     // The kernel process
 // Stack does not to be initialized because it was already initialized when main() was called
 // If we have hit the limit for maximum processes, return -1
 // Store the newly created process inside the processes array (proc_t processes[])
+
+int users_ready()
+{
+    for(int i=1; i<process_index; i++)
+    {
+        if(processes[i].status == PROC_READY)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 int startkernel(void func())
 {
     // If we have filled our process array, return -1
@@ -99,6 +114,7 @@ void yield()
             schedule();
         } else {
             printf("\nNo process to yield to! Resuming...\n");
+            return;
         }
 
     } else if (running->type == PROC_USER)
@@ -119,19 +135,20 @@ int schedule()
 { 
     int loop_entry;
 
-    if(running->pid == max_ready_pid)
+    if(most_recent_user >= max_ready_pid)
     {
         loop_entry = 1;
     } else
     {
-        loop_entry = running->pid + 1;
+        loop_entry = most_recent_user + 1;
     }
 
-    for(int i=loop_entry; i<max_ready_pid; i++)
+    for(int i=loop_entry; i<=max_ready_pid; i++)
     {
         if (processes[i].status == PROC_READY)
         {
             next = &processes[i];
+            most_recent_user = next->pid;
             return 1;
         }
     }

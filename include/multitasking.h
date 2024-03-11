@@ -1,5 +1,5 @@
 // The maximum number of user procs
-#define MAX_USER_PROCS 1
+#define MAX_USER_PROCS 7
 
 // The maximum number of kernel procs
 #define MAX_KERN_PROCS 1
@@ -45,6 +45,7 @@ typedef struct
 	void *eip;
 } proc_t;
 
+int users_ready();
 int createproc(void *func, void *stack);
 int startkernel(void func());
 void switchcontext();

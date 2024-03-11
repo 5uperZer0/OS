@@ -3,16 +3,13 @@
 
 void prockernel();
 void proca();
+void procb();
+void procc();
+void procd();
+void proce();
 
 int main() 
 {
-	// A string in C is an array of characters
-	char userInput[100];
-	char helloWorld[] = "Hello World!\n";
-	char message[] = "Please type something: ";
-	char response[] = "\nYou typed: ";
-	char newLine[] = "\n";
-	
 	// Clear the screen
 	clearscreen();
 
@@ -20,24 +17,6 @@ int main()
 	initkeymap();
 
 	startkernel(prockernel);
-
-	// Print our string
-	// printf(helloWorld);
-
-	// Run an infinite loop
-	// for(;;)
-	// {
-	// 	// Ask the user to type something
-	// 	printf(message);
-
-	// 	// Get the complete string from the user's keyboard
-	// 	scanf(userInput);
-
-	// 	// Print the string back to the user
-	// 	printf(response);
-	// 	printf(userInput);
-	// 	printf(newLine);
-	// }
 
 	return 0;
 }
@@ -57,67 +36,71 @@ void prockernel()
 	createproc(proce, (void *) 0x3400);
 
 	// while loop -- while any process is ready, yield
+	printf(message0);
+	while(users_ready())
+	{
+		yield();
+	}
+	putchar('\n');
+	printf(message2);
+
 
 	exit();
 
+	return;
 }
 
 // The user processes
 
 void proca()
 {
-	char letter = 'A';
-	putchar(&letter);
+	putchar('A');
 	exit();
 }
 
 void procb()
 {
-	char letter = 'B';
-	putchar(&letter);
+	putchar('B');
 	yield();
 
-	putchar(&letter);
+	putchar('B');
 	exit();
 }
 
 void procc()
 {
-	char letter = 'C';
-	putchar(&letter);
+	putchar('C');
 	yield();
 
-	putchar(&letter);
+	putchar('C');
 	yield();
 
-	putchar(&letter);
+	putchar('C');
 	yield();
 
-	putchar(&letter);
+	putchar('C');
 	exit();
 }
 
 
 void procd()
 {
-	char letter = 'D';
-	putchar(&letter);
+	putchar('D');
 	yield();
 
-	putchar(&letter);
+	putchar('D');
 	yield();
 
-	putchar(&letter);
+	putchar('D');
 	exit();
 }
 
 
 void proce()
 {
-	char letter = 'E';
-	putchar(&letter);
+	putchar('E');
 	yield();
 
-	putchar(&letter);
+	putchar('E');
 	exit();
 }
