@@ -154,7 +154,7 @@ int schedule()
     }
 
     next = &processes[running->pid];
-    return 1;
+    return 0;
 }
 
 // Context switching function
