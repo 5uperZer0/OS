@@ -80,16 +80,49 @@ void fileproc()
 			else if(input == 'd')
 			{
 				printf("Deleting File...\n");
-				// Delete the file
-				deleteFile()
 			}
 			else if(input == 'r')
 			{
 				printf("Reading File...\n");
+
+				file_t file;
+				file.entry = *foundEntry;
+
+				openFile(&file);
+
+				for(uint32 i = 0; i < file.entry.fileSize; i++)
+				{
+					uint8 byte = readByte(&file, i);
+					putchar((char)byte);
+				}
+
+				putchar('\n');
 			}
 			else if(input == 'w')
 			{
 				printf("Writing File...\n");
+
+				file_t file;
+				file.entry = *foundEntry;
+
+				printint(file.entry.startingCluster);
+				getchar();
+
+				openFile(&file);
+
+				getchar();
+
+				uint8 byte = 0;
+				uint32 i = 0;
+
+				while(byte != '\n')
+				{
+					byte = (uint8)getchar();
+					writeByte(&file, byte, i);
+					i++;
+				}
+
+				closeFile(&file);
 			}
 			else
 			{
@@ -144,7 +177,6 @@ void fileproc()
 
 	exit();
 }
-
 void inputWithPadding(char *string, int length)
 {
 	char nextChar = '-';
@@ -153,7 +185,6 @@ void inputWithPadding(char *string, int length)
 		if(nextChar != '\n' && nextChar != ' ')
 		{
 			nextChar = getchar();
-			
 		}
 
 		if(nextChar == '\n')
@@ -177,12 +208,8 @@ int findFile(char *filename, char* ext, directory_t directory, directory_entry_t
 		
 		if(fileExists)
 		{
-			foundEntry = entry;
+			*foundEntry = *entry;
 			return 1;
-		}
-		else
-		{
-			foundEntry = 0;
 		}
 
 		entry++;
