@@ -1,9 +1,9 @@
 ; Root Directory Contents
 rootDir:
-fileName            db "KERNEL  "
-extension           db "BIN"   
+fileName            db "kernel  "
+extension           db "bin"   
 attributes          db 0
-reserved            db 0
+reserved            dw 0
 creationTime        dw 0
 creationDate        dw 0
 lastAccessDate      dw 0

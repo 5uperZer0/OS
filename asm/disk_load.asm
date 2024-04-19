@@ -5,9 +5,9 @@ disk_load:
 	mov ah, 0x02 	; read function 
 	mov al, dh 		; number of sectors
 	mov dl, 0x00 	; drive number
-	mov dh, 0x00 	; head number
+	mov dh, 0x01 	; head number
 	mov ch, 0x00 	; cylinder number  
-	mov cl, 0x02 	; sector number 
+	mov cl, 0x10 	; sector number 
 
 	; read data to [es:bx] 
 	int 0x13

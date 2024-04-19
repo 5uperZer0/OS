@@ -81,12 +81,10 @@ typedef struct
 } __attribute__((packed)) directory_t;
 
 void init_fs(directory_t *directory);
-int openDirectory(directory_t *directory);
 int openFile(file_t *file);
 void closeFile(file_t *file);
-int createDirectory(directory_t *directory);
-int createFile(file_t *file);
-void deleteDirectory(directory_t *file);
-void deleteFile(file_t *file, directory_t *parent);
+int createFile(file_t *file, directory_t *parent);
+void deleteFile(directory_entry_t *file, directory_t *parent);
 uint8 readByte(file_t *file, uint32 index);
 int writeByte(file_t *file, uint8 byte, uint32 index);
+int stringcompare(char *string0, char *string1, int length);

@@ -37,10 +37,10 @@ void prockernel()
 	while(userprocs > 0)
 	{
 		yield();
-		userprocs = users_ready()
+		userprocs = users_ready();
 	}
 	
-	printf("OS Shutting Down...\n")
+	printf("OS Shutting Down...\n");
 }
 
 // The user processes
@@ -80,6 +80,7 @@ void fileproc()
 			else if(input == 'd')
 			{
 				printf("Deleting File...\n");
+				deleteFile(foundEntry, &root);
 			}
 			else if(input == 'r')
 			{
@@ -110,7 +111,7 @@ void fileproc()
 
 				openFile(&file);
 
-				getchar();
+				// getchar();
 
 				uint8 byte = 0;
 				uint32 i = 0;
@@ -218,18 +219,6 @@ int findFile(char *filename, char* ext, directory_t directory, directory_entry_t
 	return 0;
 }
 
-int stringcompare(char *string0, char *string1, int length)
-{
-	for(int i = 0; i < length; i++)
-	{
-		if(string0[i] != string1[i])
-		{
-			return 0;
-		}
-	}
-
-	return 1;
-}
 
 void printFileName(directory_entry_t *entry)
 {
