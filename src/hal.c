@@ -22,6 +22,10 @@ int getCursor()
 
 int putchar(char character)
 {
+	if (cursorRow > 23) {
+		clearscreen();
+		setCursor(0, 0);
+	}
 	char *videomem = (char*) VIDEO_MEM;
 	if (character == 0x0A) {
 		setCursor(0, cursorRow + 1);
@@ -71,9 +75,12 @@ char getchar()
 	{
 		if (inb(0x64) & 0b00000001)
 		{
-			if (keymap[inb(0x60)]) 
+			// MAX - We want to make sure our scancode lies within our keymap (128 chararacters)
+			uint8 scancode = inb(0x60);
+			
+			if (scancode < 128) 
 			{
-				return keymap[inb(0x60)];
+				return keymap[scancode];
 			}
 		}
 	}

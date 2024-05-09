@@ -9,7 +9,6 @@ void fileproc();
 void inputWithPadding(char *string, int length);
 void printFileName(directory_entry_t *entry);
 int findFile(char *filename, char* ext, directory_t directory, directory_entry_t *foundEntry);
-int stringcompare(char *string0, char *string1, int length);
 
 int main() 
 {
@@ -49,7 +48,6 @@ void fileproc()
 {
 	directory_t root;
 	init_fs(&root);
-
 	printf("Make a selection (c, d, r, w, q): ");
 	char input = getchar();
 	putchar(input);
@@ -106,12 +104,7 @@ void fileproc()
 				file_t file;
 				file.entry = *foundEntry;
 
-				printint(file.entry.startingCluster);
-				getchar();
-
 				openFile(&file);
-
-				// getchar();
 
 				uint8 byte = 0;
 				uint32 i = 0;

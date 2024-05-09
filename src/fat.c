@@ -36,25 +36,23 @@ void init_fs(directory_t *directory)
 }
 
 void closeFile(file_t *file)
-{
-    int index = 0;
-    
-    // use filesize to determine how much to write.
+{    
 
-    int cluster = file->entry.startingCluster;  
+    // floppy_write(0, file->entry.startingCluster + 31, file->startingAddress, 512-1);
+
+    int cluster = file->entry.startingCluster;
     int remaining = file->entry.fileSize;
 
-    while (remaining > 0) 
+    while (remaining > 0)
     {
         floppy_write(0, cluster + 31, file->startingAddress, 512-1);
         remaining -= 512;
         if(remaining > 0)
         {
-            if(fat0->entries[cluster] != 0xFFFF)
+            if(fat0->entries[cluster != 0xFFFF])
             {
-            cluster = fat0->entries[cluster];
-            }
-            else
+                cluster = fat0->entries[cluster];
+            } else
             {
                 for(int entry = 2; entry < 2304; entry++)
                 {
@@ -63,14 +61,15 @@ void closeFile(file_t *file)
                         fat0->entries[cluster] = entry;
                         cluster = entry;
                         break;
-                    }   
+                    }
                 }
             }
         }
-    }  
-
+    }
+    fat0->entries[cluster] = 0xFFFF;
+    fat1->entries[cluster] = 0xFFFF;
     floppy_write(0, 1, (void *)fat0, sizeof(fat_t)-1);
-    floppy_write(0, 10,(void *)fat1, sizeof(fat_t)-1);
+    floppy_write(0, 10, (void *)fat1, sizeof(fat_t)-1);
 
     file->isOpened = 0;
     return;
@@ -78,20 +77,19 @@ void closeFile(file_t *file)
 
 int openFile(file_t *file)
 {
+   
     int cluster = file->entry.startingCluster;
+    file->startingAddress = (uint8 *)0x30000;
     int counter = 0;
-    if (cluster >= 2 && fat0->entries[cluster] == fat1->entries[cluster]) {
-        while(cluster != 0xFFFF)
-        {
-            floppy_read(0, cluster, (uint8 *) file->startingAddress[counter*512], 512);
-            cluster = fat0->entries[cluster];
-            counter++;
-        }
-        file->isOpened = 1;
-        return 0;
+    while(cluster != 0xFFFF)
+    {
+        floppy_read(0, cluster + 31, file->startingAddress[counter*512], 512);
+        cluster = fat0->entries[cluster];
+        counter++;
     }
-    printf("Error: File cluster invalid or corrupted!");
-    return -1;
+    file->isOpened = 1;
+    return 0;
+
 }
 
 // Creates an empty file and writes it to the floppy disk
@@ -235,7 +233,7 @@ int createFile(file_t *file, directory_t *parent)
 uint8 readByte(file_t *file, uint32 index)
 {        
     if(file->isOpened && file->startingAddress != 0){
-        uint8 byte = floppy_read(0, file->entry.startingCluster, (uint8 *) file->startingAddress[index], 1);
+        uint8 byte = file->startingAddress[index];
         return byte;
     } 
     printf("Error: File was not opened or pointed to NULL!\n");
@@ -282,9 +280,9 @@ void deleteFile(directory_entry_t *file, directory_t *parent)
 
     while(entry->filename[0] != 0)
     {
-        if (stringcompare((char *)entry->filename, file->filename, 8) && stringcompare((char *)entry->extension, file->extension, 3))
+        if (stringcompare((char *)entry->filename, (char *)file->filename, 8) && stringcompare((char *)entry->extension, (char *)file->extension, 3))
         {
-            for(int i = 0; i < sizeof(directory_entry_t); i++)
+            for(int i = 0; i < (int)sizeof(directory_entry_t); i++)
             {
                 shortPointer[i] = 0;
             }

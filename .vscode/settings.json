@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "multitasking.h": "c"
+        "multitasking.h": "c",
+        "idt.h": "c",
+        "types.h": "c"
     }
 }

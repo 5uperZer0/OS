@@ -42,7 +42,7 @@ _start:
 [bits 16]
 load_kernel:
 	mov bx, kernel_offset 
-	mov dh, 48			; Load 48 sectors
+	mov dh, 48			; Load 18 (the maximum) amount of sectors in the first head and cylinder
 	call disk_load		; Load the disk so we can properly start the kernel
 
 	; Put your code here to disable the blinking cursor
